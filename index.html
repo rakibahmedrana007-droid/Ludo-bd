@@ -86,20 +86,54 @@ function show(page){
         <h3>Deposit</h3>
         <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap">
           <div style="flex:1;min-width:130px;border:1px solid #eee;border-radius:12px;padding:12px;text-align:center">
-            <div style="font-size:32px">💗</div><b>bKash</b>
+            <img src="https://cdn.imgbin.com/6/21/13/bkash-logo-bkash-mobile-payment-service-logo-T5Fr3NvD.jpg" alt="bKash" style="width:100px;height:58px;object-fit:contain"><br><b>bKash</b>
           </div>
           <div style="flex:1;min-width:130px;border:1px solid #eee;border-radius:12px;padding:12px;text-align:center">
-            <div style="font-size:32px">🟠</div><b>Nagad</b>
+            <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad" style="width:100px;height:58px;object-fit:contain"><br><b>Nagad</b>
           </div>
         </div>
-        <p>Payment number: <b>01301470686</b></p>
-        <button class="action" onclick="alert('Deposit system will be connected later.')">Deposit</button>
+        <p>Payment number: <b>01301470686</b> <button onclick="copyPayment()" style="padding:6px 9px;border:0;border-radius:7px">Copy</button></p>
+        <div style="margin-top:14px">
+          <label><b>Payment Method</b></label>
+          <select id="payMethod" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
+            <option value="bKash">bKash</option><option value="Nagad">Nagad</option>
+          </select>
+          <label style="display:block;margin-top:12px"><b>Deposit Amount (৳)</b></label>
+          <input id="depositAmount" type="number" min="1" placeholder="যেমন: 100" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
+          <label style="display:block;margin-top:12px"><b>Transaction ID</b></label>
+          <input id="trxId" type="text" placeholder="Transaction ID লিখুন" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
+          <label style="display:block;margin-top:12px"><b>Payment Screenshot / Proof</b></label>
+          <input id="proof" type="file" accept="image/*" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
+        </div>
+        <button class="action" onclick="submitDeposit()">Submit Deposit</button>
+        <p class="small" style="margin-top:10px">Transaction ID ও payment screenshot দিয়ে Submit করুন। Admin যাচাই করার পর balance যোগ হবে।</p>
       </div>`;
   }
 
   if(page==='profile'){
     c.innerHTML='<div class="card"><h2>👤 Profile</h2><p>Name: Guest User</p><p>Phone: Not connected</p></div>';
   }
+}
+
+function copyPayment(){
+  navigator.clipboard?.writeText('01301470686').then(()=>alert('Payment number copied: 01301470686'));
+}
+
+function submitDeposit(){
+  const method=document.getElementById('payMethod').value;
+  const amount=document.getElementById('depositAmount').value;
+  const trx=document.getElementById('trxId').value.trim();
+  const proof=document.getElementById('proof').files[0];
+  if(!amount || Number(amount)<=0) return alert('Deposit amount লিখুন');
+  if(!trx) return alert('Transaction ID লিখুন');
+  if(!proof) return alert('Payment screenshot upload করুন');
+  const old=JSON.parse(localStorage.getItem('depositRequests')||'[]');
+  old.push({method,amount:Number(amount),trxId:trx,proofName:proof.name,status:'Pending',time:new Date().toLocaleString()});
+  localStorage.setItem('depositRequests',JSON.stringify(old));
+  alert('Deposit request submitted! Admin verification-এর জন্য Pending থাকবে.');
+  document.getElementById('depositAmount').value='';
+  document.getElementById('trxId').value='';
+  document.getElementById('proof').value='';
 }
 
 function copyRoom(id){
