@@ -1,182 +1,58 @@
-<!DOCTYPE html>
-<html lang="bn">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Ludo BD</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#222}
-.app{max-width:480px;margin:auto;min-height:100vh;background:#fff}
-header{background:#673ab7;color:#fff;padding:20px;text-align:center}
-nav{display:flex;gap:8px;padding:12px;overflow:auto;border-bottom:1px solid #ddd}
-nav button{border:0;background:#eee;padding:10px 14px;border-radius:20px;white-space:nowrap}
-main{padding:15px}.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px #0001}
-.balance{font-size:28px;font-weight:bold}.action{width:100%;padding:13px;border:0;border-radius:10px;background:#673ab7;color:white;font-size:16px;margin-top:8px}
-.small{color:#777;font-size:13px}
-
-.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
-.pay-card{background:#fff;border:2px solid #eee;border-radius:16px;padding:14px;text-align:center;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08);transition:.2s}
-.pay-card:active{transform:scale(.97)}
-.pay-card img{width:100%;height:70px;object-fit:contain;border-radius:10px}
-.pay-hint{font-size:12px;margin-top:8px;color:#555}
-.payment-number-box{margin:12px 0;padding:16px;border-radius:16px;background:#f7f7f7;text-align:center;border:1px solid #ddd}
-.payment-number-box #payment-service{font-weight:700;font-size:18px;margin-bottom:7px}
-.payment-number-box #payment-number{font-size:24px;font-weight:800;letter-spacing:1px;margin:8px 0 12px}
-.payment-number-box button{border:0;border-radius:10px;padding:10px 16px;background:#222;color:#fff;font-weight:700;cursor:pointer}
-
+body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#f5f5f5}
+button{padding:12px 18px;margin:5px;border:0;border-radius:8px;cursor:pointer}
+.page{display:none}.page.active{display:block}
 </style>
 </head>
 <body>
-<div class="app">
-<header><h1>🎲 Ludo BD</h1><div>Welcome to Ludo BD</div></header>
-<nav>
-<button onclick="show('home')">Home</button><button onclick="show('matches')">Matches</button>
-<button onclick="show('tournament')">Tournament</button><button onclick="show('wallet')">Wallet</button><button onclick="show('profile')">Profile</button>
-</nav>
-<main id="content"></main>
+<h2>Ludo BD</h2>
+<div id="home" class="page">
+  <h3>Home</h3>
+  <button onclick="showPage('deposit')">Deposit</button>
+  <button onclick="showPage('withdraw')">Withdraw</button>
+</div>
+<div id="deposit" class="page">
+  <h3>Deposit</h3>
+  <p>Deposit page</p>
+  <button onclick="showPage('home')">Home</button>
+</div>
+<div id="withdraw" class="page">
+  <h3>Withdraw</h3>
+  <p>Withdraw page</p>
+  <button onclick="showPage('home')">Home</button>
 </div>
 <script>
-function show(page){
-  const c=document.getElementById('content');
+(function(){
+  const KEY = 'ludo-bd-current-page';
+  function validPage(p){ return ['home','deposit','withdraw'].includes(p); }
 
-  if(page==='home'){
-    c.innerHTML=`
-      <div class="card" style="text-align:center;padding:28px 18px">
-        <h2 style="font-size:28px;margin:5px 0 10px">🎲 Ludo BD-তে সবাইকে স্বাগতম</h2>
-        <p style="font-size:16px;margin:0 0 10px">আপনার Ludo BD অ্যাপ-এ আপনাকে স্বাগতম ❤️</p>
-        <p class="small">খেলুন, ম্যাচে অংশ নিন এবং আপনার প্রোফাইল পরিচালনা করুন।</p>
-      </div>
-      <div class="card"><h3>🎮 Ludo Match</h3>
-        <button class="action" onclick="show('matches')">Matches দেখুন</button>
-      </div>`;
+  window.showPage = function(page){
+    if(!validPage(page)) page='home';
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+    const el=document.getElementById(page);
+    if(el) el.classList.add('active');
+    localStorage.setItem(KEY,page);
+
+    // URL hash keeps the current section after a normal browser refresh.
+    if(location.hash !== '#'+page) history.replaceState(null,'','#'+page);
+  };
+
+  function restore(){
+    const hash = location.hash.replace('#','');
+    const saved = localStorage.getItem(KEY);
+    showPage(validPage(hash) ? hash : (validPage(saved) ? saved : 'home'));
   }
 
-  if(page==='matches'){
-    c.innerHTML=`
-      <div class="card"><h2>🎮 Matches</h2><p class="small">1 vs 1</p></div>
-
-      <div class="card">
-        <h3>1 vs 1 — Match 1</h3>
-        <p><b>Entry Fee:</b> ৳50</p>
-        <p><b>Winning:</b> ৳90</p>
-        <p><b>Room ID Code:</b> <span id="room1">LUDO1BD50</span>
-          <button onclick="copyRoom('room1')" style="margin-left:6px;padding:7px 10px;border:0;border-radius:8px">Copy</button>
-        </p>
-        <button class="action" style="background:#FFD600;color:#111;font-weight:bold" onclick="alert('Join Match 1')">Join</button>
-      </div>
-
-      <div class="card">
-        <h3>1 vs 1 — Match 2</h3>
-        <p><b>Entry Fee:</b> ৳30</p>
-        <p><b>Winning:</b> ৳50</p>
-        <p><b>Room ID Code:</b> <span id="room2">LUDO2BD30</span>
-          <button onclick="copyRoom('room2')" style="margin-left:6px;padding:7px 10px;border:0;border-radius:8px">Copy</button>
-        </p>
-        <button class="action" style="background:#FFD600;color:#111;font-weight:bold" onclick="alert('Join Match 2')">Join</button>
-      </div>
-
-      <div class="card">
-        <h3>1 vs 1 — Match 3</h3>
-        <p><b>Entry Fee:</b> ৳60</p>
-        <p><b>Winning:</b> ৳110</p>
-        <p><b>Room ID Code:</b> <span id="room3">LUDO3BD60</span>
-          <button onclick="copyRoom('room3')" style="margin-left:6px;padding:7px 10px;border:0;border-radius:8px">Copy</button>
-        </p>
-        <button class="action" style="background:#FFD600;color:#111;font-weight:bold" onclick="alert('Join Match 3')">Join</button>
-      </div>`;
-  }
-
-  if(page==='tournament'){
-    c.innerHTML='<div class="card"><h2>🏆 Tournament</h2><p>Coming soon</p></div>';
-  }
-
-  if(page==='wallet'){
-    c.innerHTML=`
-      <div class="card"><h2>💰 Wallet</h2><div class="balance">৳0.00</div><p class="small">Demo balance</p></div>
-      <div class="card">
-        <h3>Deposit</h3>
-        <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap">
-          <div style="flex:1;min-width:130px;border:1px solid #eee;border-radius:12px;padding:12px;text-align:center">
-            <img src="https://cdn.imgbin.com/6/21/13/bkash-logo-bkash-mobile-payment-service-logo-T5Fr3NvD.jpg" alt="bKash" style="width:100px;height:58px;object-fit:contain"><br><b>bKash</b>
-          </div>
-          <div style="flex:1;min-width:130px;border:1px solid #eee;border-radius:12px;padding:12px;text-align:center">
-            <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad" style="width:100px;height:58px;object-fit:contain"><br><b>Nagad</b>
-          </div>
-        </div>
-        <p>Payment number: <b>01301470686</b> <button onclick="copyPayment()" style="padding:6px 9px;border:0;border-radius:7px">Copy</button></p>
-        <div style="margin-top:14px">
-          <label><b>Payment Method</b></label>
-          <select id="payMethod" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
-            <option value="bKash">bKash</option><option value="Nagad">Nagad</option>
-          </select>
-          <label style="display:block;margin-top:12px"><b>Deposit Amount (৳)</b></label>
-          <input id="depositAmount" type="number" min="1" placeholder="যেমন: 100" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
-          <label style="display:block;margin-top:12px"><b>Transaction ID</b></label>
-          <input id="trxId" type="text" placeholder="Transaction ID লিখুন" style="width:100%;padding:12px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
-          <label style="display:block;margin-top:12px"><b>Payment Screenshot / Proof</b></label>
-          <input id="proof" type="file" accept="image/*" style="width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:10px">
-        </div>
-        <button class="action" onclick="submitDeposit()">Submit Deposit</button>
-        <p class="small" style="margin-top:10px">Transaction ID ও payment screenshot দিয়ে Submit করুন। Admin যাচাই করার পর balance যোগ হবে।</p>
-      </div>`;
-  }
-
-  if(page==='profile'){
-    c.innerHTML='<div class="card"><h2>👤 Profile</h2><p>Name: Guest User</p><p>Phone: Not connected</p></div>';
-  }
-}
-
-function copyPayment(){
-  navigator.clipboard?.writeText('01301470686').then(()=>alert('Payment number copied: 01301470686'));
-}
-
-function submitDeposit(){
-  const method=document.getElementById('payMethod').value;
-  const amount=document.getElementById('depositAmount').value;
-  const trx=document.getElementById('trxId').value.trim();
-  const proof=document.getElementById('proof').files[0];
-  if(!amount || Number(amount)<=0) return alert('Deposit amount লিখুন');
-  if(!trx) return alert('Transaction ID লিখুন');
-  if(!proof) return alert('Payment screenshot upload করুন');
-  const old=JSON.parse(localStorage.getItem('depositRequests')||'[]');
-  old.push({method,amount:Number(amount),trxId:trx,proofName:proof.name,status:'Pending',time:new Date().toLocaleString()});
-  localStorage.setItem('depositRequests',JSON.stringify(old));
-  alert('Deposit request submitted! Admin verification-এর জন্য Pending থাকবে.');
-  document.getElementById('depositAmount').value='';
-  document.getElementById('trxId').value='';
-  document.getElementById('proof').value='';
-}
-
-function copyRoom(id){
-  const el=document.getElementById(id);
-  const text=el.textContent;
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>alert('Room ID copied: '+text));
-  }else{
-    alert('Room ID: '+text);
-  }
-}
-
-show('home');
-
-function showPaymentNumber(type){
-  const box = document.getElementById('payment-number-box');
-  const service = document.getElementById('payment-service');
-  const number = document.getElementById('payment-number');
-  if(!box || !service || !number) return;
-  service.textContent = type === 'bkash' ? 'bKash Number' : 'Nagad Number';
-  number.textContent = '01301470686';
-  box.style.display = 'block';
-  box.scrollIntoView({behavior:'smooth', block:'center'});
-}
-function copyPaymentNumber(){
-  const n = document.getElementById('payment-number')?.textContent || '01301470686';
-  navigator.clipboard?.writeText(n).then(
-    ()=>alert('Number copied: '+n),
-    ()=>alert('Number: '+n)
-  );
-}
-
+  window.addEventListener('hashchange', restore);
+  window.addEventListener('pageshow', restore);
+  restore();
+})();
 </script>
 </body>
 </html>
