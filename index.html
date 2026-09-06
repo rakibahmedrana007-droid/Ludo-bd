@@ -32,7 +32,22 @@ if(page==='home')c.innerHTML='<div class="card" style="text-align:center;padding
 <p style="font-size:16px;margin:0 0 10px">আপনার Ludo BD অ্যাপ-এ আপনাকে স্বাগতম ❤️</p>
 <p class="small">খেলুন, ম্যাচে অংশ নিন এবং আপনার প্রোফাইল পরিচালনা করুন।</p>
 </div><div class="card"><h3>🎮 Ludo Match</h3><button class="action" onclick="show(\'matches\')">Matches দেখুন</button></div>';
-if(page==='matches')c.innerHTML='<div class="card"><h2>🎮 Ludo Matches</h2><p>1 vs 1 Match</p><p>Entry Fee: ৳10</p><button class="action">Join Match</button></div>';
+if(page==='matches')c.innerHTML=`
+<div class="card"><h2>🎮 Matches</h2><p class="small">1 vs 1</p></div>
+${[
+  ['1','50','90','LUDO1BD50'],
+  ['2','30','50','LUDO2BD30'],
+  ['3','60','110','LUDO3BD60']
+].map(m=>`
+<div class="card">
+  <h3>1 vs 1 — Match ${m[0]}</h3>
+  <p><b>Entry Fee:</b> ৳${m[1]}</p>
+  <p><b>Wining:</b> ৳${m[2]}</p>
+  <p><b>Room ID Code:</b> <span id="room-${m[0]}">${m[3]}</span>
+     <button onclick="copyRoom('${m[0]}')" style="margin-left:6px;padding:7px 10px;border:0;border-radius:8px">Copy</button>
+  </p>
+  <button class="action" style="background:#FFD600;color:#111;font-weight:bold" onclick="alert('Join Match ${m[0]}')">Join</button>
+</div>`).join('')}`;
 if(page==='tournament')c.innerHTML='<div class="card"><h2>🏆 Tournament</h2><p>Coming soon</p></div>';
 if(page==='wallet')c.innerHTML='<div class="card"><h2>💰 Wallet</h2><div class="balance">৳0.00</div><p class="small">Demo balance</p></div><div class="card"><h3>Deposit</h3>
 <div style="display:flex;gap:12px;margin:12px 0;flex-wrap:wrap">
@@ -48,6 +63,11 @@ if(page==='wallet')c.innerHTML='<div class="card"><h2>💰 Wallet</h2><div class
 <p>Payment number: <b>01301470686</b></p>
 <button class="action">Deposit</button></div>';
 if(page==='profile')c.innerHTML='<div class="card"><h2>👤 Profile</h2><p>Name: Guest User</p><p>Phone: Not connected</p></div>';
+}
+function copyRoom(id){
+ const text=document.getElementById('room-'+id).textContent;
+ navigator.clipboard?.writeText(text);
+ alert('Room ID copied: '+text);
 }
 show('home');
 </script>
