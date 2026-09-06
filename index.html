@@ -13,6 +13,17 @@ nav button{border:0;background:#eee;padding:10px 14px;border-radius:20px;white-s
 main{padding:15px}.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px #0001}
 .balance{font-size:28px;font-weight:bold}.action{width:100%;padding:13px;border:0;border-radius:10px;background:#673ab7;color:white;font-size:16px;margin-top:8px}
 .small{color:#777;font-size:13px}
+
+.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.pay-card{background:#fff;border:2px solid #eee;border-radius:16px;padding:14px;text-align:center;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.08);transition:.2s}
+.pay-card:active{transform:scale(.97)}
+.pay-card img{width:100%;height:70px;object-fit:contain;border-radius:10px}
+.pay-hint{font-size:12px;margin-top:8px;color:#555}
+.payment-number-box{margin:12px 0;padding:16px;border-radius:16px;background:#f7f7f7;text-align:center;border:1px solid #ddd}
+.payment-number-box #payment-service{font-weight:700;font-size:18px;margin-bottom:7px}
+.payment-number-box #payment-number{font-size:24px;font-weight:800;letter-spacing:1px;margin:8px 0 12px}
+.payment-number-box button{border:0;border-radius:10px;padding:10px 16px;background:#222;color:#fff;font-weight:700;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -147,6 +158,25 @@ function copyRoom(id){
 }
 
 show('home');
+
+function showPaymentNumber(type){
+  const box = document.getElementById('payment-number-box');
+  const service = document.getElementById('payment-service');
+  const number = document.getElementById('payment-number');
+  if(!box || !service || !number) return;
+  service.textContent = type === 'bkash' ? 'bKash Number' : 'Nagad Number';
+  number.textContent = '01301470686';
+  box.style.display = 'block';
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+}
+function copyPaymentNumber(){
+  const n = document.getElementById('payment-number')?.textContent || '01301470686';
+  navigator.clipboard?.writeText(n).then(
+    ()=>alert('Number copied: '+n),
+    ()=>alert('Number: '+n)
+  );
+}
+
 </script>
 </body>
 </html>
