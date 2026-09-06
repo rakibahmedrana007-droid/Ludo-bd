@@ -27,7 +27,11 @@ main{padding:15px}.card{background:#fff;border-radius:14px;padding:18px;margin-b
 <script>
 function show(page){
 const c=document.getElementById('content');
-if(page==='home')c.innerHTML='<div class="card"><h2>🏠 Home</h2><p>আপনি সরাসরি App-এ ঢুকেছেন।</p><p class="small">এই version-এ OTP/Login বন্ধ রাখা হয়েছে।</p></div><div class="card"><h3>🎮 Ludo Match</h3><button class="action" onclick="show(\'matches\')">Matches দেখুন</button></div>';
+if(page==='home')c.innerHTML='<div class="card" style="text-align:center;padding:28px 18px">
+<h2 style="font-size:28px;margin:5px 0 10px">🎲 Ludo BD-তে সবাইকে স্বাগতম</h2>
+<p style="font-size:16px;margin:0 0 10px">আপনার Ludo BD অ্যাপ-এ আপনাকে স্বাগতম ❤️</p>
+<p class="small">খেলুন, ম্যাচে অংশ নিন এবং আপনার প্রোফাইল পরিচালনা করুন।</p>
+</div><div class="card"><h3>🎮 Ludo Match</h3><button class="action" onclick="show(\'matches\')">Matches দেখুন</button></div>';
 if(page==='matches')c.innerHTML='<div class="card"><h2>🎮 Ludo Matches</h2><p>1 vs 1 Match</p><p>Entry Fee: ৳10</p><button class="action">Join Match</button></div>';
 if(page==='tournament')c.innerHTML='<div class="card"><h2>🏆 Tournament</h2><p>Coming soon</p></div>';
 if(page==='wallet')c.innerHTML='<div class="card"><h2>💰 Wallet</h2><div class="balance">৳0.00</div><p class="small">Demo balance</p></div><div class="card"><h3>Deposit</h3>
